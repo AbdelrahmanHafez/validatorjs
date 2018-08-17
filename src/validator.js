@@ -168,7 +168,7 @@ Validator.prototype = {
     for (var attr in input) {
       if (!Object.keys(rules).includes(attr)) {
         var rule = this.getRule('required');
-        rule.attribute = 'attr';
+        rule.attribute = attr;
         return _this._addFailure(rule);
       }
     }
