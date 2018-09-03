@@ -143,6 +143,38 @@ Validator.prototype = {
   },
 
   /**
+   * Run match validator
+   * Determines if the input object is matched with the original rules object.
+   *
+   * @return {void}
+   */
+  checkMatch: function () {
+    var _this = this;
+    var input = this._flattenObject(this.input);
+    var rules = this._parseRules(this.rules);
+    for (var attr in input) {
+      var val = input[attr];
+      if (Array.isArray(val)) {
+        for (var index in val) {
+          var subVal = val[index];
+          for (var key in subVal) {
+            input[`${attr}.${index}.${key}`] = null;
+          }
+          delete input[attr];
+        }
+      }
+    }
+
+    for (var attr in input) {
+      if (!Object.keys(rules).includes(attr)) {
+        var rule = this.getRule('required');
+        rule.attribute = attr;
+        return _this._addFailure(rule);
+      }
+    }
+  },
+
+  /**
    * Add failure and error message for given rule
    *
    * @param {Rule} rule
